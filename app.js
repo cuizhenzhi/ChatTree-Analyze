@@ -46,6 +46,9 @@ app.use('*', function(req, res, next) {
 //     res.send('Data saved successfully');
 //   });
 // });
+app.get('helloword',(req,res)=>{
+  res.send("Hello, World!")
+})
 app.post('/uploadinfos', (req, res) => {
   let data = '';
 
