@@ -1,4 +1,4 @@
-const {db, runAsync} = require("../databaseAsync");
+const {db, runAsync} = require("../databaseAsync.js");
 const express = require('express');
 const router = express.Router();
 

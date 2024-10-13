@@ -10,8 +10,8 @@ app.use(cors());
 app.use(express.json());  // 替代 bodyParser.json()，因为 bodyParser 已经集成到 Express 中
 
 // 初始化 SQLite 数据库，存储在文件中
-const {db,runAsync} = require('./databaseAsync')
-const uploadInfosRoutes = require('./routes/uploadInfos');
+const {db,runAsync} = require('./databaseAsync.js')
+const uploadInfosRoutes = require('./routes/uploadInfos.js');
 
 app.use('*', function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
