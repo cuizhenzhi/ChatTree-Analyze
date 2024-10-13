@@ -1,0 +1,21 @@
+*{
+    margin: 0;
+    border: 0;
+    box-sizing: border-box;
+}
+body{
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.testitem{
+    margin: 40px;
+    /*margin-top: 10px;*/
+
+}
+.messages{
+    width: 600px;
+    border: 1px #1E90FF solid;
+
+}

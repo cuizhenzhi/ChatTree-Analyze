@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<link href="css/index.css" rel="stylesheet">
+<body>
+<!--<div class="testitem">-->
+<!--    <button onclick="postid()">发送postid</button>-->
+<!--    <div class="messages" id="postidmessages"> </div></div>-->
+<!--</body>-->
+
+
+<div class="testitem">
+    <button onclick="postuserinfo()">发送postuserinfo</button>
+    <div class="messages" id="postuserinfo"> </div></div>
+
+<div class="testitem">
+    <button onclick="postUserActivity()">发送postUserActivity</button>
+    <div class="messages" id="postUserActivity"> </div></div>
+</body>
+<script>
+  function getRandomId(){
+    return 'user' + getRandomString(1, "number") //"1"
+  }
+  function getRandomString(length, type){
+    //48-57,65-90,97-122
+    let numArr = ['1','2','3','4','5','6','7','8','9','0']
+    let capitalArr = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'];
+    let lowerArr = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'];
+    let arr = type === "number" ? numArr : type === "letter" ? [...capitalArr, ...lowerArr] : [...numArr, ...capitalArr, ...lowerArr]
+    let str= ''
+    for(let i = 0; i < length; i++){
+      str += arr[getRandom(0, arr.length - 1)]
+    }
+    return str
+  }
+
+  /**
+   * @description 随机数产生器，返回区间内的数字（包括区间）
+   * @param min 最小值
+   * @param max 最大值
+   * @returns {number}
+   */
+  function getRandom(min, max){
+    return Math.floor(Math.random()*(max-min + 1) + min)
+  }
+
+  function postUserActivity(){
+    const actype = [
+      'useScript',
+      'updateCurrentConversationTree',
+      'toggleConversationTree',
+      'jumptonewnode',
+      'nodetakenote',
+      'nodebookmark',
+      'readManual',
+      'changeColors',
+      'searchForNode',
+      'changeLanguage'
+    ]
+    let div = document.querySelector('#postUserActivity')
+    let xhr = new XMLHttpRequest();
+    xhr.open('POST', '/activitylog',true)
+    xhr.send(
+      JSON.stringify({
+        "openai_id": "user" + getRandomString(1, "number"),
+        "action": actype[getRandom(0, actype.length - 1)],
+        "timestamp": new Date().getTime()
+      }))
+    xhr.onload = function() {
+      if (xhr.status != 200) { // 分析响应的 HTTP 状态
+        alert(`Error ${xhr.status}: ${xhr.statusText}`); // 例如 404: Not Found
+      } else { // 显示结果
+        div.innerText += `Done, ${xhr.responseText}\n`//, got ${xhr.response.length} bytes
+      }
+    };
+  }
+  // Example POST method implementation:
+  async function postData(url = "", data = {}) {
+    // Default options are marked with *
+    const response = await fetch(url, {
+      method: "GET", // *GET, POST, PUT, DELETE, etc.
+    });
+    return response.json(); // parses JSON response into native JavaScript objects
+  }
+
+
+  function postuserinfo(){
+    let div = document.querySelector('#postuserinfo')
+    postData("http://ip-api.com/json").then((data) => {
+      // console.log(data);
+      if(data.status === 'success') {
+        postUserInfoRegion(data);
+      }
+      else {
+        postUserInfoRegion()
+      }
+    }, (err)=>{
+      // console.log(err)
+      postUserInfoRegion()
+    });
+    function postUserInfoRegion(data){
+      let xhr = new XMLHttpRequest();
+      xhr.open('POST', '/user',true)
+      if(data){
+        let {country, countryCode, city, lat, lon, query,region:location, regionName, timezone} = data;
+        xhr.send(
+          JSON.stringify({
+            openai_id: getRandomId(),
+            at: getRandomString(15),
+            language: getRandomString(2, 'letter'),
+            email: getRandomString(15) + '@' + getRandomString(3, 'letter') + '.com',
+            created: new Date(),
+            name: getRandomString(6),
+            location,
+            country,
+            countryCode,
+            city,
+            lat,
+            lon,
+            query,
+            regionName,
+            timezone
+          }))
+      }else {
+        xhr.send(
+          JSON.stringify({
+            openai_id: getRandomId(),
+            at: getRandomString(15),
+            language: getRandomString(2, 'letter'),
+            email: getRandomString(15) + '@' + getRandomString(3, 'letter') + '.com',
+            created: new Date(),
+            name: getRandomString(6),
+            location: 'Asia/Shanhai'
+          }))
+      }
+      xhr.onload = function() {
+        if (xhr.status != 200) { // 分析响应的 HTTP 状态
+          alert(`Error ${xhr.status}: ${xhr.statusText}`); // 例如 404: Not Found
+        } else { // 显示结果
+          div.innerText += `Done, ${xhr.responseText}\n`//, got ${xhr.response.length} bytes
+        }
+      };
+    }
+  }
+  function postid(){
+      let div = document.querySelector('#postidmessages')
+      let xhr = new XMLHttpRequest();
+      xhr.open('POST', '/uploadinfos',true)
+      xhr.send(
+        JSON.stringify({
+        id: 'testid',
+      }))
+      xhr.onload = function() {
+        if (xhr.status != 200) { // 分析响应的 HTTP 状态
+          alert(`Error ${xhr.status}: ${xhr.statusText}`); // 例如 404: Not Found
+        } else { // 显示结果
+          div.innerText += `Done, ${xhr.responseText}\n`//, got ${xhr.response.length} bytes
+        }
+      };
+    }
+
+</script>
+</html>

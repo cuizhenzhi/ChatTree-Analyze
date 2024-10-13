@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+<div id="main" style="width: 600px; height: 600px"></div>
+
+</body>
+<!--<script src="https://echarts-maps.github.io/echarts-countries-js/echarts.min.js"></script>-->
+<script src="
+https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js
+"></script>
+<script>
+    fetch('./test.json', ).then(data=>{
+      var myChart = echarts.init(document.getElementById("main"));
+      echarts.registerMap('china', data); // 注册地图
+      let option = {
+        series: [
+          {
+            type: "map",
+            map: 'mapName', // 引入地图数据
+          },
+        ],
+      };
+      myChart.setOption(option);
+    })
+</script>
+</html>

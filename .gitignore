@@ -4,6 +4,9 @@ userActivity.db
 # 依赖目录：
 node_modules/
 
+# 数据库同步：
+syncFromServer/
+
 # 环境变量配置文件：
 .env
 
@@ -32,3 +35,7 @@ tmp/
 # 包管理器锁文件：
 package-lock.json
 yarn.lock
+
+
+public/
+worldmap/
