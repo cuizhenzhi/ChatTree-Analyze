@@ -217,7 +217,7 @@ router.post('/user', (req, res) => {
 });
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2024.10.14.02',
+    "version": '2024.10.14.03',
     "releaseDate": "2024-10-14",
     "description": "Added new features and fixed bugs.",
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
