@@ -36,7 +36,8 @@ async function setupDatabase(){
       token_expires TIMESTAMP,
       phone_number TEXT,
       name_account TEXT,
-      curVersion TEXT
+      curVersion TEXT,
+      regionName TEXT
     )`, (err) => {
     if (err) console.error('Error creating Users table', err.message);
   });
@@ -50,33 +51,37 @@ async function setupDatabase(){
       timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (user_id) REFERENCES Users(id),
       FOREIGN KEY (action_id) REFERENCES ActionTypes(id)
-    )`, (err) => {
-    if (err) console.error('Error creating ActivityLogs table', err.message);
+    )`, async (err) => {
+    if (err) {
+      console.error('Error creating ActivityLogs table', err.message);
+      return
+    }
+    try {
+      await runAsync('CREATE TABLE IF NOT EXISTS ActionTypes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT)');
+
+      const actions = [
+        { name: 'useScript', description: 'Record the time user open the page with Chattree' },
+        { name: 'updateCurrentConversationTree', description: 'Update current conversation tree' },
+        { name: 'toggleConversationTree', description: 'Toggle visibility of the conversation tree' },
+        { name: 'jumptonewnode', description: 'Jump to a new node' },
+        { name: 'nodetakenote', description: 'Take note at a node' },
+        { name: 'nodebookmark', description: 'Bookmark a node' },
+        { name: 'readManual', description: 'read the manual' },
+        { name: 'changeColors', description: 'change ui colors' },
+        { name: 'searchForNode', description: 'search for node with keywords' },
+        { name: 'changeLanguage', description: 'change default language' },
+        {name:"showNodeDetails", description: 'show node detail window kit'}
+      ];
+
+      for (let action of actions) {
+        await runAsync('INSERT OR  IGNORE INTO ActionTypes (name, description) VALUES (?, ?)', [action.name, action.description]);
+      }
+    } catch (err) {
+      console.error('Error during database setup:', err.message);
+    }
   });
 
-  try {
-    await runAsync('CREATE TABLE IF NOT EXISTS ActionTypes (id INTEGER PRIMARY KEY AUTOINCREMENT, name TEXT NOT NULL UNIQUE, description TEXT)');
 
-    const actions = [
-      { name: 'useScript', description: 'Record the time user open the page with Chattree' },
-      { name: 'updateCurrentConversationTree', description: 'Update current conversation tree' },
-      { name: 'toggleConversationTree', description: 'Toggle visibility of the conversation tree' },
-      { name: 'jumptonewnode', description: 'Jump to a new node' },
-      { name: 'nodetakenote', description: 'Take note at a node' },
-      { name: 'nodebookmark', description: 'Bookmark a node' },
-      { name: 'readManual', description: 'read the manual' },
-      { name: 'changeColors', description: 'change ui colors' },
-      { name: 'searchForNode', description: 'search for node with keywords' },
-      { name: 'changeLanguage', description: 'change default language' },
-      {name:"showNodeDetails", description: 'show node detail window kit'}
-    ];
-
-    for (let action of actions) {
-      await runAsync('INSERT OR  IGNORE INTO ActionTypes (name, description) VALUES (?, ?)', [action.name, action.description]);
-    }
-  } catch (err) {
-    console.error('Error during database setup:', err.message);
-  }
 
 }
 setupDatabase();
