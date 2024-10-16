@@ -86,12 +86,13 @@ async function setupDatabase(){
 }
 setupDatabase();
 
-const prodb = new sqlite3.Database('./syncFromServer/userActivity.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-  if (err) {
-    console.error('Error opening database', err.message);
-    return;
-  }
-  console.log('Connected to the SQLite database.');
-
-});
+const prodb = null;
+//   new sqlite3.Database('./syncFromServer/userActivity.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
+//   if (err) {
+//     console.error('Error opening database', err.message);
+//     return;
+//   }
+//   console.log('Connected to the SQLite database.');
+//
+// });
 module.exports = {db,runAsync, prodb};

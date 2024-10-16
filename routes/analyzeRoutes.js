@@ -8,7 +8,7 @@ router.get('/arrs',(req,res)=>{
 })
 router.get('/user/lonlat', async (req,res)=>{
   // res.send('alskdfjalksflasakjlsdflkjasl')
-  prodb.all (`select * from users`,(err, data)=>{
+  db.all (`select * from users`,(err, data)=>{
     if(err){
       console.log("err: ",err);
     }
@@ -26,7 +26,7 @@ router.get('/user/lonlat', async (req,res)=>{
 
 router.get('/user/lonlat/zh', async (req,res)=>{
   // res.send('alskdfjalksflasakjlsdflkjasl')
-  prodb.all(`select language, lon, lat from Users`,(err, data)=>{
+  db.all(`select language, lon, lat from Users`,(err, data)=>{
     data = data.filter(i=>{return i.lon !== null && i.lat !== null && i.language.includes('zh')}).map(i=> {return {value: [i.lon < -20 ? i.lon + 360 : i.lon, i.lat]}})
     res.send(data)
   })
