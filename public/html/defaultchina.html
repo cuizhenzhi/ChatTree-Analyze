@@ -17,18 +17,19 @@
   var myChart = echarts.init(document.getElementById("main"));
   // 渲染中间map - 中国地图
   function renderChart() {
-    $.getJSON("https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json", function (data) {
-      // 注册地图
-      echarts.registerMap("china", data);
-      // 配置option
-      setOption();
-    });
-    // $.getJSON("./worldZH.json", function (data) {
+    // $.getJSON("https://geo.datav.aliyun.com/areas_v3/bound/100000_full.json", function (data) {
     //   // 注册地图
     //   echarts.registerMap("china", data);
     //   // 配置option
     //   setOption();
     // });
+    $.getJSON("./test.json", function (data) {
+      console.log(data)
+      // 注册地图
+      echarts.registerMap("china", data);
+      // 配置option
+      setOption();
+    });
   }
   // 渲染地图
   function setOption() {

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChatTree Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .menu-container {
+            width: 50px;
+            height: 50px;
+            background-color: #4CAF50;
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 50px;
+            color: white;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .menu-content {
+            display: none;
+            position: absolute;
+            bottom: 60px;
+            right: 0;
+            background-color: white;
+            color: black;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 10px;
+            width: 150px;
+        }
+
+        .menu-container:hover .menu-content {
+            display: block;
+        }
+
+        .menu-content ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .menu-content ul li {
+            padding: 8px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .menu-content ul li:last-child {
+            border-bottom: none;
+        }
+
+        .menu-button {
+            font-size: 24px;
+        }
+
+    </style>
+</head>
+<body>
+<div id="menuContainer" class="menu-container">
+    <div class="menu-button">☰</div>
+    <div class="menu-content">
+        <ul>
+            <li>主题功能选项</li>
+            <li>消息通知设定</li>
+            <li>新闻/视频功能选项</li>
+            <li>如何使用ChatTree?</li>
+        </ul>
+    </div>
+</div>
+<script>
+  let menu = document.getElementById('menuContainer');
+  let isDragging = false;
+
+  menu.addEventListener('mousedown', function(e) {
+    isDragging = true;
+    let startX = e.clientX - menu.getBoundingClientRect().left;
+    let startY = e.clientY - menu.getBoundingClientRect().top;
+
+    function onMouseMove(e) {
+      if (isDragging) {
+        menu.style.left = e.clientX - startX + 'px';
+        menu.style.top = e.clientY - startY + 'px';
+      }
+    }
+
+    function onMouseUp() {
+      isDragging = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    }
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+  });
+
+  menu.addEventListener('touchstart', function(e) {
+    isDragging = true;
+    let startX = e.touches[0].clientX - menu.getBoundingClientRect().left;
+    let startY = e.touches[0].clientY - menu.getBoundingClientRect().top;
+
+    function onTouchMove(e) {
+      if (isDragging) {
+        menu.style.left = e.touches[0].clientX - startX + 'px';
+        menu.style.top = e.touches[0].clientY - startY + 'px';
+      }
+    }
+
+    function onTouchEnd() {
+      isDragging = false;
+      document.removeEventListener('touchmove', onTouchMove);
+      document.removeEventListener('touchend', onTouchEnd);
+    }
+
+    document.addEventListener('touchmove', onTouchMove);
+    document.addEventListener('touchend', onTouchEnd);
+  });
+
+</script>
+</body>
+</html>

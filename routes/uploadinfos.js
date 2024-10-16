@@ -2,17 +2,10 @@ const {db, runAsync} = require("../databaseAsync.js");
 const express = require('express');
 const router = express.Router();
 
-let actionArr;
-db.all(`select * from ActionTypes` , function(err, data) {
-  if (err) {
-    console.error('Error executing SQL:', err);
-    // return res.status(500).send('Failed to update user');
-  }
-  // console.log(data)
-  actionArr = data
-  // console.log(`Rows updated: ${this.changes}, ${row.id}`);
-  // res.send(data)//'User ' + row.id + ' updated successfully');
-});
+const actionArr = require('../metadatas/actionArr.js')
+router.get('/arrs',(req,res)=>{
+  res.send(actionArr)
+})
 
 router.post('/uploadinfos', (req, res) => {
   let data = '';
@@ -215,17 +208,16 @@ router.post('/user', (req, res) => {
     });
   });
 });
+
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2024.10.14.03',
+    "version": '2024.10.17.01',
     "releaseDate": "2024-10-14",
     "description": "Added new features and fixed bugs.",
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
     "urgency": "medium"
   })
 })
-// router.get('/list',(req,res)=>{
-//
-// })
+
 
 module.exports = router

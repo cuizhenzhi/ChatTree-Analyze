@@ -23,25 +23,38 @@
     //   // 配置option
     //   setOption();
     // });
-    $.getJSON("./worldZH.json", function (data) {
+    // $.getJSON("./worldZH.json", function (data) {
+    //   // 注册地图
+    //   echarts.registerMap("world", data);
+    //   // 配置option
+    //   setOption();
+    // });
+
+    Promise.all([ fetch("./worldZH.json", {
+      method: 'GET'
+    }), fetch('../analyze/user/lonlat',{method: 'GET'})]).then((response) => {
+      console.log("response: ",response);
+      return Promise.all([response[0].json(), response[1].json()]); // 解析响应为JSON
+    }).then((data) => {
+      console.log(data)
       // 注册地图
-      echarts.registerMap("china", data);
+      echarts.registerMap("world", data[0]);
       // 配置option
-      setOption();
+      setOption(data[1]);
     });
   }
   // 渲染地图
-  function setOption() {
+  function setOption(userlonglat) {
     const option = {
       // 地理坐标系组件用于地图的绘制
       geo: {
         // 使用 registerMap 注册的地图名称。
-        map: "china",
+        map: "world",
         // 是否开启鼠标缩放和平移漫游。默认不开启。如果只想要开启缩放或者平移，可以设置成 'scale' 或者 'move'。设置成 true 为都开启
         roam: true,
         // 图形上的文本标签，可用于说明图形的一些数据信息，比如值，名称等。
         label: {
-          show: true,
+          show: false,
           color: "#666666",
         },
         // 地图区域的多边形 图形样式。
@@ -65,6 +78,21 @@
           },
         },
       },
+      tooltip:{
+        show: true,
+        formatter:
+          (d)=>{
+          // console.log(d)
+            let {name} = d;
+            if(name){
+              return name
+            }else{
+              let { data:{city, country, value:[lon, lat]}} = d;
+              return `${city}, ${country} </br> 经度：${lon}  纬度：${lat}`
+            }
+          }
+        //'{c0}'
+      },
       series: [
         {
           type: "map",
@@ -75,30 +103,11 @@
         {
           type: "scatter",
           coordinateSystem: "geo",
-          symbolSize: "20",
+          symbolSize: "10",
           itemStyle: {
             color: "#fa3534",
           },
-          data: [
-            { name: "北京", value: [116.4074, 39.9042] },
-            { name: "上海", value: [121.4737, 31.2304] },
-            { name: "广州", value: [113.2644, 23.1292] },
-            // 更多数据...
-          ],
-        },
-        {
-          type: "scatter",
-          coordinateSystem: "geo",
-          symbolSize: "40",
-          itemStyle: {
-            color: "#fa3534",
-          },
-          data: [
-            { name: "新疆", value: [90.4074, 39.9042] },
-            { name: "黑龙江", value: [131.4737, 41.2304] },
-            { name: "云南", value: [83.2644, 23.1292] },
-            // 更多数据...
-          ],
+          data:userlonglat
         },
       ],
     };

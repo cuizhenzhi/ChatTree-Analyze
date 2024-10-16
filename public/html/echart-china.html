@@ -16,14 +16,23 @@
 https://cdn.jsdelivr.net/npm/echarts@5.5.1/dist/echarts.min.js
 "></script>
 <script>
-    fetch('./test.json', ).then(data=>{
+  // $.getJSON("./test.json", function (data) {
+  //   console.log(data)
+  //   // 注册地图
+  //   echarts.registerMap("china", data);
+  //   // 配置option
+  //   setOption();
+  // });
+    fetch('./test.json', ).then(async data=>{
+      data = await data.json();
+      console.log("data: ",data);
       var myChart = echarts.init(document.getElementById("main"));
       echarts.registerMap('china', data); // 注册地图
       let option = {
         series: [
           {
             type: "map",
-            map: 'mapName', // 引入地图数据
+            map: 'china', // 引入地图数据
           },
         ],
       };
