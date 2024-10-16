@@ -1,11 +1,15 @@
-const {db, runAsync} = require("../databaseAsync.js");
+const {db, runAsync, getActionArray} = require("../databaseAsync.js");
 const express = require('express');
 const router = express.Router();
 
-const actionArr = require('../metadatas/actionArr.js')
-router.get('/arrs',(req,res)=>{
-  res.send(actionArr)
-})
+let actionArr;
+getActionArray()
+  .then(data => actionArr = data);//require('../metadatas/actionArr.js')
+router.get('/arrs', (req, res) => {
+  getActionArray()
+    .then(actionArr => res.send(actionArr))
+    .catch(err => res.status(500).send('Error loading data'));
+});
 
 router.post('/uploadinfos', (req, res) => {
   let data = '';

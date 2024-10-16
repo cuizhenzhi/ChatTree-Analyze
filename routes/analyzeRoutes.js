@@ -1,8 +1,12 @@
 const {db, runAsync, prodb} = require("../databaseAsync.js");
 const express = require('express');
+const {getActionArray} = require("../databaseAsync");
 const router = express.Router();
 
-const actionArr = require('../metadatas/actionArr.js')
+// const actionArr = require('../metadatas/actionArr.js')
+let actionArr;
+getActionArray()
+  .then(data => actionArr = data);//require('../metadatas/actionArr.js')
 router.get('/arrs',(req,res)=>{
   res.send(actionArr)
 })

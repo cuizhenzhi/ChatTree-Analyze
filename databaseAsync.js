@@ -86,13 +86,16 @@ async function setupDatabase(){
 }
 setupDatabase();
 
-const prodb = null;
-//   new sqlite3.Database('./syncFromServer/userActivity.db', sqlite3.OPEN_READWRITE | sqlite3.OPEN_CREATE, (err) => {
-//   if (err) {
-//     console.error('Error opening database', err.message);
-//     return;
-//   }
-//   console.log('Connected to the SQLite database.');
-//
-// });
-module.exports = {db,runAsync, prodb};
+function getActionArray() {
+  return new Promise((resolve, reject) => {
+    db.all(`select * from ActionTypes`, (err, data) => {
+      if (err) {
+        console.error('Error executing SQL:', err);
+        reject(err);
+      } else {
+        resolve(data);
+      }
+    });
+  });
+}
+module.exports = {db,runAsync,getActionArray};
