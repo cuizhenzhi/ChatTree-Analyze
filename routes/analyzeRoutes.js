@@ -16,7 +16,7 @@ router.get('/user/lonlat', async (req,res)=>{
     if(err){
       console.log("err: ",err);
     }
-    console.log(data,);
+    // console.log(data,);
     data = data.filter(i=>{return i.lon !== null && i.lat !== null}).map(i=> {
       return {
         value: [i.lon < -20 ? (i.lon + 360).toFixed(2) : i.lon.toFixed(2), i.lat.toFixed(2)],

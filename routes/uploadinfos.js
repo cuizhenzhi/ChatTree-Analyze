@@ -115,11 +115,11 @@ router.post('/user', (req, res) => {
       name_account,
       curVersion
     } = JSON.parse(data);
-    console.log('language',language)
+    // console.log('language',language)
     const sqlCheck = `SELECT * FROM Users WHERE openai_id = ?`;
     db.get(sqlCheck, [openai_id], (err, row) => {
       if (err) {
-        console.log("Error querying SQL", err);
+        // console.log("Error querying SQL", err);
         return console.error(err.message);
       }
       const now = new Date();
@@ -165,7 +165,7 @@ router.post('/user', (req, res) => {
             return res.status(500).send('Failed to update user');
           }
 
-          console.log(`Rows updated: ${this.changes}, ${row.id}`);
+          // console.log(`Rows updated: ${this.changes}, ${row.id}`);
           res.send('User ' + row.id + ' updated successfully');
         });
         return;
@@ -185,7 +185,7 @@ router.post('/user', (req, res) => {
       
       curVersion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ? ,?, ?, ?, ?)`;
       created = new Date(created).getTime()
-      console.log(created,  now.getTime())
+      // console.log(created,  now.getTime())
       db.run(sqlInsert, [ undefined, openai_id, token, language, email, created, name, location , now.getTime(),
         country,
         countryCode,
@@ -202,11 +202,11 @@ router.post('/user', (req, res) => {
 
         curVersion], function(err) {
         if (err) {
-          console.log("Error operating SQL", err);
+          // console.log("Error operating SQL", err);
           return console.error(err.message);
         }
         let tolog = `[Users]: 1 row inserted with rowid ${this.lastID}`
-        console.log(tolog);
+        // console.log(tolog);
         res.send('Data saved successfully' + tolog);
       });
     });
