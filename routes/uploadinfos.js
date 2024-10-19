@@ -101,6 +101,7 @@ router.post('/user', (req, res) => {
     data += chunk.toString();  // 转换数据为字符串
   });
   req.on('end', () => {
+   // console.log("/user",JSON.parse(data));
     let { id, openai_id, at: token, language, email, created, name, location,
       country,
       countryCode,
@@ -143,7 +144,8 @@ router.post('/user', (req, res) => {
       token_expires = ?,
       phone_number = ?,
       name_account = ?,
-      curVersion = ?
+      curVersion = ?,
+      last_usage = ?
     WHERE id = ?;`;
         db.run(sql, [token, language, email, name, location,
           country,
@@ -159,7 +161,9 @@ router.post('/user', (req, res) => {
           phone_number,
           name_account,
 
-          curVersion, row.id], function(err) {
+          curVersion,
+
+          new Date().getTime(), row.id], function(err) {
           if (err) {
             console.error('Error executing SQL:', err);
             return res.status(500).send('Failed to update user');
@@ -170,7 +174,7 @@ router.post('/user', (req, res) => {
         });
         return;
       }
-      const sqlInsert = `INSERT INTO Users (id, openai_id, token, language, email, created, name, location, first_usage,
+      const sqlInsert = `INSERT INTO Users (id, openai_id, token, language, email, created, name, location, first_usage, last_usage,
           country,
           countryCode,
           city,
@@ -182,11 +186,12 @@ router.post('/user', (req, res) => {
       token_expires,
       phone_number,
       name_account,
-      
-      curVersion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ? ,?, ?, ?, ?)`;
+      curVersion,
+          
+      first_version) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?,?, ?, ?, ?,?, ?, ?, ? ,?, ?, ?, ?, ?, ?)`;
       created = new Date(created).getTime()
       // console.log(created,  now.getTime())
-      db.run(sqlInsert, [ undefined, openai_id, token, language, email, created, name, location , now.getTime(),
+      db.run(sqlInsert, [ undefined, openai_id, token, language, email, created, name, location , now.getTime(), now.getTime(),
         country,
         countryCode,
         city,
@@ -200,6 +205,7 @@ router.post('/user', (req, res) => {
         phone_number,
         name_account,
 
+        curVersion,
         curVersion], function(err) {
         if (err) {
           // console.log("Error operating SQL", err);
@@ -213,10 +219,77 @@ router.post('/user', (req, res) => {
   });
 });
 
+router.post('/user/originLocation', (req, res) => {
+  let data = '';
+  req.on('data', chunk => {
+    data += chunk.toString();  // 转换数据为字符串
+  });
+  req.on('end', () => {
+  //  console.log("/user/originLocation",JSON.parse(data));
+    let {
+      openai_id,
+      location: location_origin,
+      country: country_origin,
+      countryCode: countryCode_origin,
+      city: city_origin,
+      lat: lat_origin,
+      lon: lon_origin,
+      query: query_origin,
+      regionName: regionName_origin,
+      timezone: timezone_origin,
+    } = JSON.parse(data);
+    // console.log('language',language)
+    const sqlCheck = `SELECT * FROM Users WHERE openai_id = ?`;
+    db.get(sqlCheck, [openai_id], (err, row) => {
+      if (err) {
+        // console.log("Error querying SQL", err);
+        return console.error(err.message);
+      }
+      const now = new Date();
+      //如果有记录，更新返回，如果没有则添加新用户信息
+      if (row?.openai_id) {
+        const sql = `
+        UPDATE Users
+        SET
+        location_origin = ?,
+        country_origin = ?,
+        countryCode_origin = ?,
+        city_origin = ?,
+        lat_origin = ?,
+        lon_origin= ?,
+        query_origin = ?,
+        regionName_origin = ?,
+        timezone_origin = ?
+    WHERE id = ?;`;
+        db.run(sql, [
+          location_origin,
+          country_origin,
+          countryCode_origin,
+          city_origin,
+          lat_origin,
+          lon_origin,
+          query_origin,
+          regionName_origin,
+          timezone_origin,
+
+          row.id], function(err) {
+          if (err) {
+            console.error('Error executing SQL:', err);
+            return res.status(500).send('Failed to update user');
+          }
+
+          // console.log(`Rows updated: ${this.changes}, ${row.id}`);
+          res.send('User ' + row.id + ' updated successfully');
+        });
+      }
+    });
+  });
+});
+
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2024.10.17.01',
-    "releaseDate": "2024-10-17",
+    "version": '2024.10.19.01',
+    "releaseDate": "2024-10-19",
     "description": "Added new features and fixed bugs.",
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
     "urgency": "medium"

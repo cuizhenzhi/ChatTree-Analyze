@@ -23,6 +23,10 @@
     <button onclick="postUserActivity()">发送postUserActivity</button>
     <div class="messages" id="postUserActivity"> </div></div>
 </body>
+<div class="testitem">
+    <button onclick="postOriginLocationInfo()">发送postOriginLocationInfo</button>
+    <div class="messages" id="postOriginLocationInfo"> </div></div>
+</body>
 <script>
   function getRandomId(){
     return 'user' + getRandomString(1, "number") //"1"
@@ -81,7 +85,7 @@
     };
   }
   // Example POST method implementation:
-  async function postData(url = "", data = {}) {
+  async function getData(url = "", data = {}) {
     // Default options are marked with *
     const response = await fetch(url, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -92,7 +96,7 @@
 
   function postuserinfo(){
     let div = document.querySelector('#postuserinfo')
-    postData("http://ip-api.com/json").then((data) => {
+    getData("http://ip-api.com/json").then((data) => {
       // console.log(data);
       if(data.status === 'success') {
         postUserInfoRegion(data);
@@ -111,7 +115,7 @@
         let {country, countryCode, city, lat, lon, query,region:location, regionName, timezone} = data;
         xhr.send(
           JSON.stringify({
-            openai_id: getRandomId(),
+            openai_id: getRandomId(),//"user-LIqRZ8zThmAUTxofWxSDB9p6",
             at: getRandomString(15),
             language: getRandomString(2, 'letter'),
             email: getRandomString(15) + '@' + getRandomString(3, 'letter') + '.com',
@@ -125,7 +129,8 @@
             lon,
             query,
             regionName,
-            timezone
+            timezone,
+            curVersion: "2024.10.18.01"
           }))
       }else {
         xhr.send(
@@ -148,6 +153,172 @@
       };
     }
   }
+
+
+  const getIPs2 = (callback) => {
+    var ip_dups = {};
+    var RTCPeerConnection = window.RTCPeerConnection
+      || window.mozRTCPeerConnection
+      || window.webkitRTCPeerConnection;
+    var mediaConstraints = {
+      optional: [{ RtpDataChannels: true }]
+    };
+    var servers = {
+      iceServers: [
+        { urls: "stun:stun.services.mozilla.com" },
+        { urls: "stun:stun.l.google.com:19302" },
+      ]
+    };
+    var pc = new RTCPeerConnection(servers, mediaConstraints);
+    var allIPs = []; // 初始化一个数组来收集IP地址
+
+    function handleCandidate(candidate) {
+      var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
+      var hasIp = ip_regex.exec(candidate);
+      if (hasIp) {
+        var ip_addr = ip_regex.exec(candidate)[1];
+        if (!ip_dups[ip_addr]) {  // 如果IP地址未被记录
+          allIPs.push(ip_addr); // 添加到数组
+          ip_dups[ip_addr] = true;
+        }
+      }
+    }
+
+    pc.onicecandidate = function (ice) {
+      if (ice.candidate) {
+        handleCandidate(ice.candidate.candidate);
+      }
+    };
+
+    pc.createDataChannel("");
+    pc.createOffer(function (result) {
+      pc.setLocalDescription(result, () => {}, (e) => {});
+    }, (e) => {});
+
+    setTimeout(() => {
+      var lines = pc.localDescription.sdp.split('\n');
+      lines.forEach(function (line) {
+        if (line.indexOf('a=candidate:') === 0) {
+          handleCandidate(line);
+        }
+      });
+      callback(allIPs); // 在回调中返回所有收集到的IP地址
+    }, 1000);
+  }
+
+
+
+
+  async function postOriginLocationInfo(){
+    const div = document.querySelector('#postOriginLocationInfo')
+    const getIPs = () => {
+      return new Promise((resolve, reject) => {
+        var ip_dups = {};
+        var RTCPeerConnection = window.RTCPeerConnection
+          || window.mozRTCPeerConnection
+          || window.webkitRTCPeerConnection;
+        var mediaConstraints = {
+          optional: [{ RtpDataChannels: true }]
+        };
+        var servers = {
+          iceServers: [
+            { urls: "stun:stun.services.mozilla.com" },
+            { urls: "stun:stun.l.google.com:19302" },
+          ]
+        };
+        var pc = new RTCPeerConnection(servers, mediaConstraints);
+        var allIPs = []; // 初始化一个数组来收集IP地址
+
+        function handleCandidate(candidate) {
+          var ip_regex = /([0-9]{1,3}(\.[0-9]{1,3}){3}|[a-f0-9]{1,4}(:[a-f0-9]{1,4}){7})/
+          var hasIp = ip_regex.exec(candidate);
+          if (hasIp) {
+            var ip_addr = ip_regex.exec(candidate)[1];
+            if (!ip_dups[ip_addr]) {  // 如果IP地址未被记录
+              allIPs.push(ip_addr); // 添加到数组
+              ip_dups[ip_addr] = true;
+            }
+          }
+        }
+
+        pc.onicecandidate = function (ice) {
+          if (ice.candidate) {
+            handleCandidate(ice.candidate.candidate);
+          } else {
+            // 当没有更多的 candidate 信息时（ice.candidate 为 null），resolve the promise
+            resolve(allIPs);
+          }
+        };
+
+        pc.createDataChannel("");
+        pc.createOffer().then(offer => {
+          return pc.setLocalDescription(offer);
+        }).catch(reject);
+
+        // 检查 localDescription 中的 candidate
+        setTimeout(() => {
+          if (pc.localDescription && pc.localDescription.sdp) {
+            var lines = pc.localDescription.sdp.split('\n');
+            lines.forEach(function (line) {
+              if (line.indexOf('a=candidate:') === 0) {
+                handleCandidate(line);
+              }
+            });
+          }
+          resolve(allIPs);
+        }, 1000);
+      });
+    }
+    const ips = await getIPs();
+    console.log('Collected IPs:', ips)
+    let requests = [];
+    for(const ip of ips) {
+      requests.push(getData(`http://ip-api.com/json/${ip}?fields=status,message,continent,continentCode,country,countryCode,region,regionName,city,district,zip,lat,lon,timezone,offset,currency,isp,org,as,asname,reverse,mobile,proxy,hosting,query`))
+    }
+
+    Promise.all(requests).then(data=>{
+      console.log("data", data)
+      data.filter(i=> i.status === 'success')
+      data = data[0];
+      postUserInfoOriginRegion(data);
+
+      function postUserInfoOriginRegion(data){
+        if(!data) return;
+        let xhr = new XMLHttpRequest();
+        xhr.open('POST', '/user/originLocation',true)
+      let {country, countryCode, city, lat, lon, query,region:location, regionName, timezone} = data;
+      xhr.send(
+        JSON.stringify({
+          openai_id: getRandomId(),//'user-LIqRZ8zThmAUTxofWxSDB9p6',//
+          location,
+          country,
+          countryCode,
+          city,
+          lat,
+          lon,
+          query,
+          regionName,
+          timezone
+        }))
+        xhr.onload = function() {
+          if (xhr.status != 200) { // 分析响应的 HTTP 状态
+            alert(`Error ${xhr.status}: ${xhr.statusText}`); // 例如 404: Not Found
+          } else { // 显示结果
+            div.innerText += `Done, ${xhr.responseText}\n`//, got ${xhr.response.length} bytes
+          }
+        };
+      }
+    })
+  }
+  // postOriginLocationInfo()
+  // 使用 getIPs 函数
+  // getIPs().then(ips => {
+  //   console.log('Collected IPs:', ips);
+  // }).catch(error => {
+  //   console.error('Failed to get IPs:', error);
+  // });
+
+
   function postid(){
       let div = document.querySelector('#postidmessages')
       let xhr = new XMLHttpRequest();
