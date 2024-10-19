@@ -290,7 +290,8 @@ router.get('/checkupdate',(req,res)=>{
   res.send({
     "version": '2024.10.19.01',
     "releaseDate": "2024-10-19",
-    "description": "Added new features and fixed bugs.",
+    "description": "You can save your dragging history of every conversation now!\n" +
+      "Also, the code blocks will present just as the best effects as ChatGPT native page!",
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
     "urgency": "medium"
   })
