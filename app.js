@@ -13,6 +13,7 @@ app.use(express.json());  // 替代 bodyParser.json()，因为 bodyParser 已经
 const {db,runAsync} = require('./databaseAsync.js')
 const uploadInfosRoutes = require('./routes/uploadinfos.js');
 const analyzeRoutes = require('./routes/analyzeRoutes.js');
+const csr = require('./routes/csr.js');
 
 app.use('*', function(req, res, next) {
   res.header('Access-Control-Allow-Origin', '*');
@@ -40,6 +41,7 @@ function extractAppInfo(app) {
 // });
 
 app.use('/analyze',analyzeRoutes)
+app.use('/cs',csr)
 app.use('/',uploadInfosRoutes)
 // 设置静态文件目录
 app.use(express.static(path.join(__dirname, 'public')));

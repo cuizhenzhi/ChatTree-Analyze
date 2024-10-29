@@ -12,6 +12,7 @@ const db = new sqlite3.Database('./userActivity.db', sqlite3.OPEN_READWRITE | sq
 });
 
 const runAsync = promisify(db.run.bind(db))
+const getAsync = promisify(db.get.bind(db))
 async function setupDatabase(){
 
   // 创建 Users 表
@@ -81,8 +82,38 @@ async function setupDatabase(){
     }
   });
 
+  // db.run(`
+  //   CREATE TABLE IF NOT EXISTS ConversationList (
+  //     id INTEGER PRIMARY KEY AUTOINCREMENT,
+  //     openai_id TEXT,
+  //     create_time TIMESTAMP,
+  //     update_time TIMESTAMP,
+  //     openai_id TEXT,
+  //     is_archived BOOLEAN,
+  //     FOREIGN KEY (user_id) REFERENCES Users(id),
+  //   )`, (err) => {
+  //   if (err) console.error('Error creating ConversationList table', err.message);
+  // });
 
-
+  db.run(`
+    CREATE TABLE IF NOT EXISTS Conversations (
+        user_id INTEGER NOT NULL,
+        conversation_id TEXT NOT NULL,
+        current_node TEXT,
+        create_time TIMESTAMP,
+        update_time TIMESTAMP,
+        title TEXT,
+        content TEXT,
+        is_archived INTEGER,
+        default_model_slug TEXT,
+        PRIMARY KEY (user_id, conversation_id),
+        FOREIGN KEY (user_id) REFERENCES Users(id)
+    )`, (err) => {
+    if (err) console.error('Error creating Conversations table', err.message);
+    db.run(`CREATE INDEX IF NOT EXISTS idx_userid ON Conversations(user_id)`, (err) => {
+      if (err) console.error('Error creating index on user_id', err.message);
+    });
+  });
 }
 setupDatabase();
 
@@ -98,4 +129,4 @@ function getActionArray() {
     });
   });
 }
-module.exports = {db,runAsync,getActionArray};
+module.exports = {db,runAsync,getAsync,getActionArray};

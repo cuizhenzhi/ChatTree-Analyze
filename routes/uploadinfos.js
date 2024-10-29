@@ -288,10 +288,10 @@ router.post('/user/originLocation', (req, res) => {
 
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2024.10.19.01',
-    "releaseDate": "2024-10-19",
-    "description": "You can save your dragging history of every conversation now!\n" +
-      "Also, the code blocks will present just as the best effects as ChatGPT native page!",
+    "version": '2024.10.30.01',
+    "releaseDate": "2024-10-30",
+    "description": "New Feature: Multi-Dragging-Version-ChatTree of a single conversation is available now! Update to check it out!",
+    "descriptions": {"zh": "新版本特性：一颗对话树可留存多个版本的拖拽记录，实现一次对话产生不同版本的思维导图。"},
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
     "urgency": "medium"
   })
