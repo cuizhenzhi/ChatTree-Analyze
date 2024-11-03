@@ -288,7 +288,7 @@ router.post('/user/originLocation', (req, res) => {
 
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2024.11.03.01',
+    "version": '2024.11.03.02',
     "releaseDate": "2024-11-03",
     "description": "New features: faster chat fetching.",
     "descriptions": {"zh": "新版本特性：加快对话树获取。"},
