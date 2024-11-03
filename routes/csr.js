@@ -88,7 +88,7 @@ router.get('/lu', async (req, res) => {
   }
   if(openai_id === "user-LIqRZ8zThmAUTxofWxSDB9p6"){
     res.send({last_updated: 1000000000000000, archived_ts:1718978885.898, non_archived_ts: 1730485161.170});
-
+    return
   }
   try {
     const sqlCheckUser = `SELECT * FROM Users WHERE openai_id = ?`;
