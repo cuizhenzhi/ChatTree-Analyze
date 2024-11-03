@@ -79,12 +79,12 @@ router.post('/activitylog', (req, res) => {
       if (row?.openai_id) {
         const sql = `
     INSERT INTO ActivityLogs (id, user_id, action_id, timestamp) VALUES (?, ?,?,?);`;
-        db.run(sql, [undefined, row.id, actionArr[actionArr.findIndex(i=>{return i.name === action})].id, timestamp], function(err) {
+        db.run(sql, [undefined, row.id, actionArr[actionArr.findIndex(i=>{return i.name === action})].id, timestamp || now], function(err) {
           if (err) {
             console.error('Error executing SQL:', err);
-            return res.status(500).send('Failed to update user');
+            return res.status(500).send('Failed to insert logs.');
           }
-          console.log(`Rows updated: ${this.changes}, ${row.id}`);
+          console.log(`[ACTIVITY] inserted: id ${row.id} time: ${timestamp}`);
           res.send(`Data created successfully ${ openai_id, action, timestamp }`);
           // res.send('User ' + row.id + ' updated successfully');
         });
@@ -169,7 +169,7 @@ router.post('/user', (req, res) => {
             return res.status(500).send('Failed to update user');
           }
 
-          // console.log(`Rows updated: ${this.changes}, ${row.id}`);
+          console.log(`[Users] Rows updated: ${this.changes}, ${row.id}`);
           res.send('User ' + row.id + ' updated successfully');
         });
         return;
@@ -213,7 +213,7 @@ router.post('/user', (req, res) => {
         }
         let tolog = `[Users]: 1 row inserted with rowid ${this.lastID}`
         // console.log(tolog);
-        res.send('Data saved successfully' + tolog);
+        res.send('[Users]Data saved successfully' + tolog);
       });
     });
   });
@@ -278,8 +278,8 @@ router.post('/user/originLocation', (req, res) => {
             return res.status(500).send('Failed to update user');
           }
 
-          // console.log(`Rows updated: ${this.changes}, ${row.id}`);
-          res.send('User ' + row.id + ' updated successfully');
+          console.log(`[OriginLocation]Rows updated: ${this.changes}, ${row.id}`);
+          res.send('OL updated successfully');
         });
       }
     });
