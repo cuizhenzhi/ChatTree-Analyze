@@ -48,7 +48,7 @@ router.post('/dts', (req, res) => {
                          is_archived = excluded.is_archived,
                          default_model_slug = excluded.default_model_slug;`;
         let isArchived = newChats[0].is_archived
-        console.log("newChats.length: ",newChats.length, "isArchived: ", isArchived);
+        // console.log("newChats.length: ",newChats.length, "isArchived: ", isArchived);
         for (const chat of newChats) {
           // console.log(chat.conversation_id)
           const createdTime = new Date(chat.create_time * 1000).getTime();
@@ -94,7 +94,7 @@ router.get('/lu', async (req, res) => {
         // const sqlGetMaxUpdateTime = `SELECT MAX(update_time) as maxUpdateTime FROM Conversations WHERE user_id = ? AND is_archived = 1`;
         // const result = await getAsync(sqlGetMaxUpdateTime, [user_row.id]);
         // res.send({lastUpdateTime: result.maxUpdateTime / 1000});
-      console.log(user_row)
+      // console.log(user_row)
       let {last_updated, archived_ts, non_archived_ts} = user_row;
       res.send({last_updated, archived_ts:archived_ts/1000, non_archived_ts: non_archived_ts/1000});
     } else {
