@@ -22,9 +22,11 @@ async function updateMaxUpdateTime(user_id, is_archived) {
 //details
 router.post('/dts', async (req, res) => {
 
-  let data = '';
+  // let data = '';
   // console.log("/dts",JSON.parse(data));
-  let { openai_id, newChats} = JSON.parse(data);
+  // let { openai_id, newChats} = JSON.parse(data);
+  let { openai_id, newChats } = req.body;
+
   try {
     const sqlCheckUser = `SELECT * FROM Users WHERE openai_id = ?`;
     const user_row = await getAsync(sqlCheckUser, [openai_id]);
