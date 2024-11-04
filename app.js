@@ -7,7 +7,7 @@ const app = express();
 const PORT = 3003;
 
 app.use(cors());
-app.use(express.json());  // 替代 bodyParser.json()，因为 bodyParser 已经集成到 Express 中
+app.use(express.json({limit: '100mb'}));  // 替代 bodyParser.json()，因为 bodyParser 已经集成到 Express 中
 
 // 初始化 SQLite 数据库，存储在文件中
 const {db,runAsync} = require('./databaseAsync.js')
