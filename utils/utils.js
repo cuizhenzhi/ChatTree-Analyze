@@ -85,7 +85,85 @@ function processMapping(mapping) {
   }
 }
 
+
+function getProportionOption(serialize_data, first_data, cur_data){
+  let versions = [...new Set([...first_data.map(i=>i.first_version), ...cur_data.map(i=>i.curVersion)])].sort()
+  let option_data = versions.map((i,outindex)=>{
+    let arr = new Array(versions.length)
+    for(let i = 0; i < versions.length; i++){
+      if(i >= outindex){
+        arr[i] = 0;
+      }
+    }
+    return arr;
+  })
+  const time_index_map = {};
+  versions.forEach((i,index)=>time_index_map[i] = index)
+  // console.log(time_index_map,);
+  serialize_data.forEach(i=>{
+    option_data[time_index_map[i.first_version]][time_index_map[i.curVersion]] = i.user_count;
+  })
+
+  // console.log(option_data)
+  let time_index_arr = Object.keys(time_index_map)
+  // console.log(time_index_arr, time_index_map);
+  option_data.forEach((versiondata, index)=>{
+    let firstV = time_index_arr[index]
+    for(let i = versiondata.length - 1;i >=index ;i--){
+      versiondata[i] += (i<versiondata.length - 1)? versiondata[i+1] : 0
+    }
+  })
+  console.log(option_data)
+  let seriesdata = Object.keys(time_index_map).map(i=>{
+    return{
+      name: i,
+      type: 'line',
+      stack: 'Total',
+      data: option_data[time_index_map[i]]
+
+    }
+  })
+// console.log("seriesdata:",seriesdata);
+  option = {
+    title: {
+      text: 'User preservation proportion'
+    },
+    tooltip: {
+      trigger: 'axis'
+    },
+    legend: {
+      data: Object.keys(time_index_map)
+    },
+    grid: {
+      left: '3%',
+      right: '4%',
+      bottom: '3%',
+      containLabel: true
+    },
+    toolbox: {
+      feature: {
+        saveAsImage: {}
+      }
+    },
+    xAxis: {
+      type: 'category',
+      boundaryGap: false,
+      data: Object.keys(time_index_map)
+    },
+    yAxis: {
+      type: 'value'
+    },
+    series: seriesdata
+  };
+  // console.dir(option, {depth: null});
+  return option;
+}
+// let data = first_data.map(i => new Array(first_data.length))
+// console.log(data)
+
+
 module.exports = {
   cleanObject,
-  processMapping
+  processMapping,
+  getProportionOption
 }

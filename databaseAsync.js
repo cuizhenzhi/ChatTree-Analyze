@@ -13,6 +13,7 @@ const db = new sqlite3.Database('./userActivity.db', sqlite3.OPEN_READWRITE | sq
 
 const runAsync = promisify(db.run.bind(db))
 const getAsync = promisify(db.get.bind(db))
+const getAllAsync = promisify(db.all.bind(db))
 async function setupDatabase(){
 
   // 创建 Users 表
@@ -129,4 +130,4 @@ function getActionArray() {
     });
   });
 }
-module.exports = {db,runAsync,getAsync,getActionArray};
+module.exports = {db,runAsync,getAsync,getActionArray, getAllAsync};

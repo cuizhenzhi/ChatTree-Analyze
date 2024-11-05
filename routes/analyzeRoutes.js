@@ -1,6 +1,7 @@
-const {db, runAsync} = require("../databaseAsync.js");
+const {db, runAsync, getAllAsync} = require("../databaseAsync.js");
 const express = require('express');
-const {getActionArray} = require("../databaseAsync");
+const {getActionArray} = require("../databaseAsync.js");
+const {getProportionOption} = require('../utils/utils.js')
 const router = express.Router();
 
 // const actionArr = require('../metadatas/actionArr.js')
@@ -34,5 +35,23 @@ router.get('/user/lonlat/zh', async (req,res)=>{
     data = data.filter(i=>{return i.lon !== null && i.lat !== null && i.language.includes('zh')}).map(i=> {return {value: [i.lon < -20 ? i.lon + 360 : i.lon, i.lat]}})
     res.send(data)
   })
+})
+
+router.get('/user/preserve_proportion', async (req, res)=>{
+  // console.log("runAsync: ",runAsync);
+  let serialize_data = await getAllAsync(`SELECT first_version, curVersion, COUNT(*) AS user_count
+FROM Users
+GROUP BY first_version, curVersion
+ORDER BY first_version, curVersion;`);
+  let first_data = await getAllAsync(`SELECT first_version, COUNT(*) AS user_count
+FROM Users
+GROUP BY first_version
+ORDER BY first_version;`);
+  let cur_data = await getAllAsync(`SELECT curVersion, COUNT(*) AS user_count
+FROM Users
+GROUP BY curVersion
+ORDER BY curVersion;`);
+  res.send(getProportionOption(serialize_data,first_data,cur_data))
+  return;
 })
 module.exports = router
