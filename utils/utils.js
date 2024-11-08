@@ -118,7 +118,7 @@ function getProportionOption(serialize_data, first_data, cur_data){
     return{
       name: i,
       type: 'line',
-      stack: 'Total',
+      // stack: 'Total',
       data: option_data[time_index_map[i]]
 
     }

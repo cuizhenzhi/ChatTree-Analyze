@@ -52,6 +52,5 @@ FROM Users
 GROUP BY curVersion
 ORDER BY curVersion;`);
   res.send(getProportionOption(serialize_data,first_data,cur_data))
-  return;
 })
 module.exports = router

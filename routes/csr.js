@@ -1,7 +1,7 @@
 const {db, runAsync, getActionArray,getAsync} = require("../databaseAsync.js");
 const express = require('express');
 const {processMapping} = require('../utils/utils.js')
-
+const {simplifyChatMessage} = require('../utils/simplifyChatMessage.js')
 const router = express.Router();
 
 async function updateMaxUpdateTime(user_id, is_archived) {
@@ -117,26 +117,28 @@ router.get('/lu', async (req, res) => {
 
 
 
-router.get('/c', async (req, res) => {
-  try {
-    const conversation_id = req.query.id;  // 从查询参数中获取 openai_id
-    // console.log("lu openai_id: ",openai_id);
-    const sqlCheckchat = `SELECT * FROM Conversations WHERE conversation_id = ?`;
-    const chatrow = await getAsync(sqlCheckchat, [conversation_id]);
-    if (chatrow) {
-      // const sqlGetMaxUpdateTime = `SELECT MAX(update_time) as maxUpdateTime FROM Conversations WHERE user_id = ? AND is_archived = 1`;
-      // const result = await getAsync(sqlGetMaxUpdateTime, [user_row.id]);
-      // res.send({lastUpdateTime: result.maxUpdateTime / 1000});
-      // console.log(user_row)
-      // let {last_updated, archived_ts, non_archived_ts} = user_row;
-      res.send(chatrow);
-    } else {
-      res.status(404).send('User not found');
-    }
-  } catch (error) {
-    console.error('Database error:', error);
-    res.status(500).send('Internal server error');
-  }
-});
+// router.get('/c', async (req, res) => {
+//   try {
+//     const conversation_id = req.query.id;  // 从查询参数中获取 openai_id
+//     // console.log("lu openai_id: ",openai_id);
+//     const sqlCheckchat = `SELECT * FROM Conversations WHERE conversation_id = ?`;
+//     const chatrow = await getAsync(sqlCheckchat, [conversation_id]);
+//     if (chatrow) {
+//       // const sqlGetMaxUpdateTime = `SELECT MAX(update_time) as maxUpdateTime FROM Conversations WHERE user_id = ? AND is_archived = 1`;
+//       // const result = await getAsync(sqlGetMaxUpdateTime, [user_row.id]);
+//       // res.send({lastUpdateTime: result.maxUpdateTime / 1000});
+//       // console.log(user_row)
+//       // let {last_updated, archived_ts, non_archived_ts} = user_row;
+//       let content = JSON.parse(chatrow.content)
+//       simplifyChatMessage(content)
+//       res.send(content);
+//     } else {
+//       res.status(404).send('User not found');
+//     }
+//   } catch (error) {
+//     console.error('Database error:', error);
+//     res.status(500).send('Internal server error');
+//   }
+// });
 
 module.exports = router

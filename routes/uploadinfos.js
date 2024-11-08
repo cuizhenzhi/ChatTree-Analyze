@@ -288,10 +288,10 @@ router.post('/user/originLocation', (req, res) => {
 
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2024.11.03.03',
-    "releaseDate": "2024-11-03",
-    "description": "New features: faster chat fetching.",
-    "descriptions": {"zh": "新版本特性：加快对话树获取。"},
+    "version": '2024.11.08.01',
+    "releaseDate": "2024-11-08",
+    "description": "New features: shorcuts enabled.",
+    "descriptions": {"zh": "新版本特性：快捷键设置。"},
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
     "urgency": "medium"
   })
