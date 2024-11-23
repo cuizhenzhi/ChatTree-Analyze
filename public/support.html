@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #title{
+            display: block;
+            margin: 50px auto;
+            text-align: center;
+        }
+        #hasAlreadyExistedFor{
+            font-size: 0.8em;
+        }
+        #beforeMilliSecond{
+            width: 500px;
+        }
+        #milliSecond {
+            width: 2em; /* 定义固定宽度 */
+            font-size: 0.1em; /* 小一些的字号，相对于其父元素的字号大小 */
+            margin-right: 16px;
+            display: inline-block; /* 让宽度生效，对于 inline 元素需要设置为 inline-block */
+        }
+        #imgDiv{
+            display: flex;
+            flex-direction: row;
+            justify-content: space-evenly;
+        }
+        #imgDiv #alipay{
+            width: 350px;
+            height: 500px;
+        }
+        #imgDiv #wechat{
+            width: 450px;
+            height: 500px;
+        }
+        #contactDiv{
+            width: 420px;
+
+        }
+        #imgDiv #contact{
+            width: 420px;
+            height: 460px;
+        }
+        #contactText{
+            text-align: center;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1 id="title">
+        <span id="hasAlreadyExistedFor"></span>
+        <span id="beforeMilliSecond"></span>
+        <span id="milliSecond"></span>
+        <span id="secondText">秒</span>
+    </h1>
+    <div id="imgDiv">
+
+        <img id="alipay" src="./imgs/alipay.png" alt="">
+        <div id="contactDiv">
+            <div id="contactText"></div>
+            <img id="contact" src="./imgs/contact.jpg" alt="">
+        </div>
+        <img id="wechat" src="./imgs/wechat.png" alt="">
+    </div>
+</body>
+<script>
+    const title = document.getElementById('title')
+    const hasAlreadyExistedFor = document.getElementById('hasAlreadyExistedFor')
+    const beforeMilliSecond = document.getElementById('beforeMilliSecond')
+    const milliSecond = document.getElementById('milliSecond')
+    const secondText = document.getElementById('secondText')
+    const contactText = document.getElementById('contactText')
+    // console.log(window.location.search.substring(1).split('=')[1].includes('zh'))
+    const isChina = window.location.search.substring(1).split('=')[1].includes('zh');
+    if(isChina){
+      secondText.innerHTML = '秒'
+      hasAlreadyExistedFor.innerHTML = 'ChatTree 脚本已经坚持更新了'
+      contactText.innerHTML = '联系我：请您打赏时添加微信号为备注信息！'
+    }else{
+      secondText.innerHTML = 'Seconds'
+      hasAlreadyExistedFor.innerHTML = 'ChatTree has been consistently updated for '
+      contactText.innerHTML = 'To contact me: Please add your WeChat ID as a note when making a donation!'
+    }
+    // title.innerHTML = '脚本已经坚持更新了'
+    function calculateTimeDifference() {
+      const startDate = new Date('2023-10-04');
+      const now = new Date();
+      const diff = now - startDate; // 总毫秒数
+
+      const milliseconds = diff % 1000;
+      const seconds = Math.floor((diff / 1000) % 60);
+      const minutes = Math.floor((diff / 1000 / 60) % 60);
+      const hours = Math.floor((diff / 1000 / 60 / 60) % 24);
+      const days = Math.floor(diff / 1000 / 60 / 60 / 24);
+
+      return { days, hours, minutes, seconds, milliseconds };
+    }
+
+    setInterval(function() {
+      const timeDiff = calculateTimeDifference();
+      let str1 = `Days: ${timeDiff.days}, Hours: ${timeDiff.hours}, Minutes: ${timeDiff.minutes}, Seconds: ${timeDiff.seconds}, Milliseconds: ${timeDiff.milliseconds}`
+      let str, millistr;
+      if(isChina) {
+        str = `${timeDiff.days}天 ${timeDiff.hours}小时 ${timeDiff.minutes}分钟 ${timeDiff.seconds}`
+        millistr = `.${timeDiff.milliseconds}`
+      }else{
+        str = `${timeDiff.days} Days ${timeDiff.hours} Hours ${timeDiff.minutes} Minutes ${timeDiff.seconds}`
+        millistr = `.${timeDiff.milliseconds}`
+      }
+
+      beforeMilliSecond.innerHTML = str
+      milliSecond.innerHTML = millistr
+      // console.log(str);
+    }, 10); // 每秒更新一次
+
+
+
+</script>
+</html>
