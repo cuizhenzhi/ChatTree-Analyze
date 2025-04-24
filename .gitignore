@@ -1,6 +1,7 @@
 # 用户id数据库
 userActivity.db
-
+*.db
+backup/
 # 依赖目录：
 node_modules/
 

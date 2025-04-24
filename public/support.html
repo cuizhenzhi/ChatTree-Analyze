@@ -66,6 +66,8 @@
     </style>
 </head>
 <body>
+<!--<a href="/crxs/DHDGFFKKEBHMKFJOJEJMPBLDMPOBFKFO_5_3_2_0.crx" download="xyz.crx">Download CRX</a>-->
+<a id="download-link">666</a>
     <h1 id="title">
         <span id="hasAlreadyExistedFor"></span>
         <span id="beforeMilliSecond"></span>
@@ -92,7 +94,33 @@
     </div>
 </body>
 <script>
-    const title = document.getElementById('title')
+  document.addEventListener('DOMContentLoaded', function() {
+    const downloadLink = document.getElementById('download-link');
+    downloadLink.addEventListener('click', function(e) {
+      e.preventDefault();
+      const xhr = new XMLHttpRequest();
+      xhr.open('GET', downloadLink.href, true);
+      xhr.responseType = 'blob';
+      xhr.onload = function() {
+        if (xhr.status === 200) {
+          const url = window.URL.createObjectURL(new Blob([xhr.response]));
+          const tempLink = document.createElement('a');
+          tempLink.style.display = 'none';
+          tempLink.href = url;
+          tempLink.setAttribute('download', 'xyz.crx');
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          document.body.removeChild(tempLink);
+          window.URL.revokeObjectURL(url);
+        }
+      };
+      xhr.send();
+    });
+  });
+
+
+
+  const title = document.getElementById('title')
     const hasAlreadyExistedFor = document.getElementById('hasAlreadyExistedFor')
     const beforeMilliSecond = document.getElementById('beforeMilliSecond')
     const milliSecond = document.getElementById('milliSecond')

@@ -39,7 +39,21 @@ async function setupDatabase(){
       phone_number TEXT,
       name_account TEXT,
       curVersion TEXT,
-      regionName TEXT
+      regionName TEXT,
+      location_origin TEXT,
+      country_origin TEXT,
+      countryCode_origin TEXT,
+      city_origin TEXT,
+      lat_origin REAL,
+      lon_origin REAL,
+      query_origin TEXT,
+      regionName_origin TEXT,
+      timezone_origin TEXT,
+      first_version TEXT,
+      last_usage TIMESTAMP,
+      last_updated TIMESTAMP,
+      non_archived_ts TIMESTAMP,
+      archived_ts TIMESTAMP
     )`, (err) => {
     if (err) console.error('Error creating Users table', err.message);
   });

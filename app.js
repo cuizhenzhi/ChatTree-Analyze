@@ -43,13 +43,20 @@ function extractAppInfo(app) {
 app.use('/analyze',analyzeRoutes)
 app.use('/cs',csr)
 app.use('/',uploadInfosRoutes)
+app.use((req, res, next) => {
+  if (['.crx'].includes(path.extname(req.path).toLowerCase())) {
+    console.log("crx",);
+    res.setHeader('Content-Type', 'application/octet-stream');
+    res.setHeader('Content-Disposition', 'attachment; filename="' + path.basename(req.path) + '"');
+  }
+  next();
+});
 // 设置静态文件目录
 app.use(express.static(path.join(__dirname, 'public')));
 // 启动服务器
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });
-
 // Graceful shutdown
 process.on('SIGINT', () => {
   console.log('Closing the database connection.');
