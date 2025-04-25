@@ -297,15 +297,24 @@ router.post('/user/originLocation', (req, res) => {
 //   })
 // })
 
+// router.get('/checkupdate',(req,res)=>{
+//   res.send({
+//     "version": '2025.4.25.01',
+//     "releaseDate": "2025-04-25",
+//     "description": "New features: . REPAIR JUMPING FUNCTION. This is due to chatgpt officially remove jumping buttons at the very first, so the script cann't get ful info about the page and the tree. Thanks to author having chatgpt, this function is back!\n2. All kinds of links are able to be detected! Whatever model you use or change in the middle of the chat, the script can always update your conversation tree!\n3. Delete unimportant logs to make your chatgpt page run faster!",
+//     "descriptions": {"zh": "新版本特性：1.修复跳转对话节点功能：chatgpt官网初始化时隐藏了跳转按钮信息，脚本无法第一时间检测到。好在通过曲线救国的方式，脚本重新获得了相应的能力。\n2. 所有的链接都可正常识别，对话中修改模型不会影响对话树的更新。\n3. 删除了不必要的调试语句，减少延迟和消耗。\n"},
+//     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
+//     "urgency": "medium"
+//   })
+// })
 router.get('/checkupdate',(req,res)=>{
   res.send({
-    "version": '2025.4.25.01',
+    "version": '2025.04.25.04',
     "releaseDate": "2025-04-25",
-    "description": "New features: . REPAIR JUMPING FUNCTION. This is due to chatgpt officially remove jumping buttons at the very first, so the script cann't get ful info about the page and the tree. Thanks to author having chatgpt, this function is back!\n2. All kinds of links are able to be detected! Whatever model you use or change in the middle of the chat, the script can always update your conversation tree!\n3. Delete unimportant logs to make your chatgpt page run faster!",
-    "descriptions": {"zh": "新版本特性：1.修复跳转对话节点功能：chatgpt官网初始化时隐藏了跳转按钮信息，脚本无法第一时间检测到。好在通过曲线救国的方式，脚本重新获得了相应的能力。\n2. 所有的链接都可正常识别，对话中修改模型不会影响对话树的更新。\n3. 删除了不必要的调试语句，减少延迟和消耗。\n"},
+    "description": "New features: . REPAIR detailed logics. Revise version number.",
+    "descriptions": {"zh": "修复细微逻辑，修正版本号"},
     "downloadUrl": "https://greasyfork.org/en/scripts/476683-chatgpt-chattree",
     "urgency": "medium"
   })
 })
-
 module.exports = router
